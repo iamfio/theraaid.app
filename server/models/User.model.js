@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, default: mongoose } = require('mongoose');
 
 // TODO: Please make sure you edit the User model to whatever makes sense in this case
 const userSchema = new Schema(
@@ -14,9 +14,31 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'Password is required.'],
     },
-    name: {
+    firstName: {
       type: String,
-      required: [true, 'Name is required.'],
+      required: [true, 'First name is required.'],
+    },
+    lastName: {
+      type: String,
+      required: [true, 'Last name is required'],
+    },
+    birthday: {
+      type: Date,
+    },
+    userpic: String,
+    userpicPath: {
+      type: String,
+      default: 'https://picsum.photos/200/200?grayscale',
+    },
+    userpicPublicId: String,
+    phone: String,
+    address: {
+      type: Schema.Types.ObjectId,
+      ref: 'Address',
+    },
+    medicalProfile: {
+      type: String,
+      enum: ['Physio', 'Ergo', 'Masseur'],
     },
   },
   {
