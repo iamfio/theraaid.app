@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import App from '@/App'
 import SignIn from '@/routes/SignIn'
-import SignUp from '../routes/SignUp'
+import SignUp, { action as signUpAction } from '@/routes/SignUp'
 
 export const router = createBrowserRouter([
   {
@@ -10,10 +10,11 @@ export const router = createBrowserRouter([
   },
   {
     path: '/signin',
-    element: <SignIn />
+    element: <SignIn />,
   },
   {
     path: '/signup',
-    element: <SignUp />
-  }
+    element: <SignUp />,
+    action: signUpAction,
+  },
 ])

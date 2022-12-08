@@ -1,4 +1,4 @@
-import { Link as RouterLink, Form } from 'react-router-dom'
+import { Link as RouterLink, Form, redirect } from 'react-router-dom'
 
 import {
   Flex,
@@ -16,8 +16,9 @@ import {
   useColorModeValue,
   Link,
 } from '@chakra-ui/react'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
+import authService from '../services/auth.service'
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false)
@@ -50,30 +51,30 @@ export default function SignUp() {
                 <Box>
                   <FormControl id="firstName" isRequired>
                     <FormLabel>Vorname</FormLabel>
-                    <Input type="text" name="firstName" />
+                    <Input type="text" name={'firstName'} />
                   </FormControl>
                 </Box>
                 <Box>
-                  <FormControl id="lastName">
+                  <FormControl id="lastName" isRequired>
                     <FormLabel>Nachname</FormLabel>
-                    <Input type="text" name="lastName" />
+                    <Input type="text" name={'lastName'} />
                   </FormControl>
                 </Box>
               </HStack>
               <FormControl id="email" isRequired>
                 <FormLabel>Email Adresse</FormLabel>
-                <Input type="email" name="email" />
+                <Input type="email" name={'email'} />
               </FormControl>
               <FormControl id="password" isRequired>
                 <FormLabel>Passwort</FormLabel>
                 <InputGroup>
                   <Input
                     type={showPassword ? 'text' : 'password'}
-                    name="password"
+                    name={'password'}
                   />
                   <InputRightElement h={'full'}>
                     <Button
-                      type={'submit'}
+                      // type={'submit'}
                       variant={'ghost'}
                       onClick={() =>
                         setShowPassword((showPassword) => !showPassword)
@@ -86,6 +87,7 @@ export default function SignUp() {
               </FormControl>
               <Stack spacing={10} pt={2}>
                 <Button
+                  type="submit"
                   loadingText="Submitting"
                   size="lg"
                   bg={'blue.400'}
@@ -111,4 +113,12 @@ export default function SignUp() {
       </Stack>
     </Flex>
   )
+}
+
+export async function action({ request }) {
+  const formData = await request.formData()
+  const user = Object.fromEntries(formData)
+
+  await authService.signup(user)
+  return redirect('/')
 }

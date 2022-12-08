@@ -1,4 +1,9 @@
-import { Link as RouterLink, Form } from 'react-router-dom'
+import {
+  Link as RouterLink,
+  Form,
+  redirect,
+  useNavigate,
+} from 'react-router-dom'
 
 import {
   Flex,
@@ -14,8 +19,27 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react'
+import authService from '../services/auth.service'
+import { useContext, useState } from 'react'
+import { AuthContext } from '@/context/auth.context'
 
 export default function SignIn() {
+  const { storeToken, authenticateUser } = useContext(AuthContext)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  const navigate = useNavigate()
+
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault()
+
+    const { data } = await authService.login({ email, password })
+
+    storeToken(data.authToken)
+    authenticateUser()
+    navigate('/')
+  }
+
   return (
     <Flex
       minH={'100vh'}
@@ -40,15 +64,25 @@ export default function SignIn() {
           boxShadow={'lg'}
           p={8}
         >
-          <Form method="post">
+          <form onSubmit={handleLoginSubmit}>
             <Stack spacing={4}>
               <FormControl id="email">
                 <FormLabel>Email</FormLabel>
-                <Input type="email" name="email" />
+                <Input
+                  type="email"
+                  name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </FormControl>
               <FormControl id="password">
                 <FormLabel>Passwort</FormLabel>
-                <Input type="password" name="password" />
+                <Input
+                  type="password"
+                  name="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </FormControl>
               <Stack spacing={10}>
                 {/* <Stack
@@ -70,7 +104,7 @@ export default function SignIn() {
                 </Button>
               </Stack>
             </Stack>
-          </Form>
+          </form>
         </Box>
       </Stack>
     </Flex>

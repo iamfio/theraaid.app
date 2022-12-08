@@ -1,4 +1,5 @@
 import { Link as RouterLink } from 'react-router-dom'
+import { AuthContext } from '../context/auth.context'
 
 import {
   Box,
@@ -26,8 +27,11 @@ import {
   MoonIcon,
   SunIcon,
 } from '@chakra-ui/icons'
+import { useContext } from 'react'
 
 export default function Navbar() {
+  const { isLoggedIn, isLoading } = useContext(AuthContext)
+
   const { colorMode, toggleColorMode } = useColorMode()
   const { isOpen, onToggle } = useDisclosure()
 
@@ -68,7 +72,7 @@ export default function Navbar() {
           </Text>
 
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
-            <DesktopNav />
+            <DesktopNav isLoggedIn={isLoggedIn} />
           </Flex>
         </Flex>
 
@@ -78,43 +82,31 @@ export default function Navbar() {
           direction={'row'}
           spacing={6}
         >
-          <Link
-            as={RouterLink}
-            to={'/signin'}
-            p={2}
-            fontSize={'sm'}
-            fontWeight={500}
-            _hover={{
-              textDecoration: 'none',
-              color: 'blue.500',
-              fontWeight: 500,
-              textDecor: 'underline'
-            }}
-          >
-            Einloggen
-          </Link>
+          <AuthControl isLoggedIn={isLoggedIn} />
 
-          <Link
-            as={RouterLink}
-            to={'/signup'}
-            py={2}
-            px={3}
-            fontSize={'sm'}
-            fontWeight={500}
-            backgroundColor={'blue.500'}
-            color={'white'}
-            borderRadius={'5px'}
-            _hover={{
-              textDecoration: 'none',
-              color: 'white',
-              bg: 'blue.300',
-              fontWeight: 500,
-              textDecor: 'underline'
-            }}
-          >
-            Registrieren
-          </Link>
-          
+          {!isLoggedIn && (
+            <Link
+              as={RouterLink}
+              to={'/signup'}
+              py={2}
+              px={3}
+              fontSize={'sm'}
+              fontWeight={500}
+              backgroundColor={'blue.500'}
+              color={'white'}
+              borderRadius={'5px'}
+              _hover={{
+                textDecoration: 'none',
+                color: 'white',
+                bg: 'blue.300',
+                fontWeight: 500,
+                textDecor: 'underline',
+              }}
+            >
+              Registrieren
+            </Link>
+          )}
+
           <Button onClick={toggleColorMode}>
             {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
           </Button>
@@ -122,59 +114,81 @@ export default function Navbar() {
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>
-        <MobileNav />
+        <MobileNav isLoggedIn={isLoggedIn} />
       </Collapse>
     </Box>
   )
 }
 
-const DesktopNav = () => {
+const AuthControl = ({ isLoggedIn }) => (
+  <Link
+    as={RouterLink}
+    to={isLoggedIn ? '/signout' : '/signin'}
+    p={2}
+    fontSize={'sm'}
+    fontWeight={500}
+    _hover={{
+      textDecoration: 'none',
+      color: 'blue.500',
+      fontWeight: 500,
+      textDecor: 'underline',
+    }}
+  >
+    {isLoggedIn ? 'Ausloggen' : 'Einloggen'}
+  </Link>
+)
+
+const DesktopNav = ({ isLoggedIn }) => {
   const linkColor = useColorModeValue('gray.600', 'gray.200')
   const linkHoverColor = useColorModeValue('gray.800', 'white')
   const popoverContentBgColor = useColorModeValue('white', 'gray.800')
 
   return (
-    <Stack direction={'row'} spacing={4}>
-      {NAV_ITEMS.map((navItem) => (
-        <Box key={navItem.label}>
-          <Popover trigger={'hover'} placement={'bottom-start'}>
-            <PopoverTrigger>
-              <Link
-                as={RouterLink}
-                p={2}
-                href={navItem.href ?? '#'}
-                fontSize={'sm'}
-                fontWeight={500}
-                color={linkColor}
-                _hover={{
-                  textDecoration: 'none',
-                  color: linkHoverColor,
-                }}
-              >
-                {navItem.label}
-              </Link>
-            </PopoverTrigger>
+    <>
+      {!isLoggedIn && (
+        <Stack direction={'row'} spacing={4}>
+          {NAV_ITEMS.map((navItem) => (
+            <Box key={navItem.label}>
+              <Popover trigger={'hover'} placement={'bottom-start'}>
+                <PopoverTrigger>
+                  <Link
+                    as={RouterLink}
+                    p={2}
+                    href={navItem.href ?? '#'}
+                    fontSize={'sm'}
+                    fontWeight={500}
+                    color={linkColor}
+                    _hover={{
+                      textDecoration: 'none',
+                      color: linkHoverColor,
+                    }}
+                  >
+                    {navItem.label}
+                  </Link>
+                </PopoverTrigger>
 
-            {navItem.children && (
-              <PopoverContent
-                border={0}
-                boxShadow={'xl'}
-                bg={popoverContentBgColor}
-                p={4}
-                rounded={'xl'}
-                minW={'sm'}
-              >
-                <Stack>
-                  {navItem.children.map((child) => (
-                    <DesktopSubNav key={child.label} {...child} />
-                  ))}
-                </Stack>
-              </PopoverContent>
-            )}
-          </Popover>
-        </Box>
-      ))}
-    </Stack>
+                {navItem.children && (
+                  <PopoverContent
+                    border={0}
+                    boxShadow={'xl'}
+                    bg={popoverContentBgColor}
+                    p={4}
+                    rounded={'xl'}
+                    minW={'sm'}
+                  >
+                    <Stack>
+                      {navItem.children.map((child) => (
+                        <DesktopSubNav key={child.label} {...child} />
+                      ))}
+                    </Stack>
+                  </PopoverContent>
+                )}
+              </Popover>
+            </Box>
+          ))}
+        </Stack>
+      )}
+    </>
   )
 }
 
@@ -216,17 +230,21 @@ const DesktopSubNav = ({ label, href, subLabel }) => {
   )
 }
 
-const MobileNav = () => {
+const MobileNav = ({ isLoggedIn }) => {
   return (
-    <Stack
-      bg={useColorModeValue('white', 'gray.800')}
-      p={4}
-      display={{ md: 'none' }}
-    >
-      {NAV_ITEMS.map((navItem) => (
-        <MobileNavItem key={navItem.label} {...navItem} />
-      ))}
-    </Stack>
+    <>
+      {!isLoggedIn && (
+        <Stack
+          bg={useColorModeValue('white', 'gray.800')}
+          p={4}
+          display={{ md: 'none' }}
+        >
+          {NAV_ITEMS.map((navItem) => (
+            <MobileNavItem key={navItem.label} {...navItem} />
+          ))}
+        </Stack>
+      )}
+    </>
   )
 }
 
