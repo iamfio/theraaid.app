@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import './App.css'
-import Layout from './components/Layout'
-import Index from './routes/Index'
+import '@/App.css'
+import Layout from '@/components/Layout'
+import Index from '@/routes/Index'
 
 function App() {
   return (
