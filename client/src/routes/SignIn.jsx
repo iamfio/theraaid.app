@@ -24,7 +24,7 @@ import { useContext, useState } from 'react'
 import { AuthContext } from '../context/auth.context'
 
 export default function SignIn() {
-  const { storeToken, storeId, authenticateUser } = useContext(AuthContext)
+  const { storeToken, storeUserData, authenticateUser } = useContext(AuthContext)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -38,6 +38,7 @@ export default function SignIn() {
     console.log("LOGIN PAYLOAD:", data)
 
     storeToken(data.authToken)
+    // storeUserData(data.user)
 
     authenticateUser()
     navigate(`/app/${data.user._id}`)

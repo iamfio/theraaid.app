@@ -1,17 +1,21 @@
-import { useLoaderData, useNavigate } from 'react-router-dom'
+import { Outlet, useLoaderData, useNavigate } from 'react-router-dom'
 import authService from '../../services/auth.service'
-import Layout from '@/components/Layout'
 
-function Dashboard() {
+import DashboardLayout from '@/components/user/DashboardLayout'
+
+function Dashboard({ children }) {
+  // const { useUserDataContext } = useContext(AuthContext)
+
   const { user } = useLoaderData()
+  // const userData = useUserDataContext()
+
+  // console.log(userData)
+
   return (
-    <Layout user={user}>
-      <h1>Dashboard</h1>
-      <h1>Hallo, {user.firstName}</h1>
-      <p>
-        <img src={user.userpicPath} alt={user.name} />
-      </p>
-    </Layout>
+    <DashboardLayout user={user}>
+      {/* {children} */}
+      <Outlet />
+    </DashboardLayout>
   )
 }
 
