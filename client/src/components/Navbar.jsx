@@ -1,3 +1,5 @@
+import { Link as RouterLink } from 'react-router-dom'
+
 import {
   Box,
   Flex,
@@ -22,11 +24,11 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
   MoonIcon,
-  SunIcon
+  SunIcon,
 } from '@chakra-ui/icons'
 
 export default function Navbar() {
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { colorMode, toggleColorMode } = useColorMode()
   const { isOpen, onToggle } = useDisclosure()
 
   return (
@@ -76,28 +78,43 @@ export default function Navbar() {
           direction={'row'}
           spacing={6}
         >
-          <Button
-            as={'a'}
+          <Link
+            as={RouterLink}
+            to={'/signin'}
+            p={2}
             fontSize={'sm'}
-            fontWeight={400}
-            variant={'link'}
-            href={'#'}
+            fontWeight={500}
+            _hover={{
+              textDecoration: 'none',
+              color: 'blue.500',
+              fontWeight: 500,
+              textDecor: 'underline'
+            }}
           >
             Einloggen
-          </Button>
-          <Button
-            display={{ base: 'none', md: 'inline-flex' }}
+          </Link>
+
+          <Link
+            as={RouterLink}
+            to={'/signup'}
+            py={2}
+            px={3}
             fontSize={'sm'}
-            fontWeight={600}
+            fontWeight={500}
+            backgroundColor={'blue.500'}
             color={'white'}
-            bg={'blue.400'}
-            href={'#'}
+            borderRadius={'5px'}
             _hover={{
+              textDecoration: 'none',
+              color: 'white',
               bg: 'blue.300',
+              fontWeight: 500,
+              textDecor: 'underline'
             }}
           >
             Registrieren
-          </Button>
+          </Link>
+          
           <Button onClick={toggleColorMode}>
             {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
           </Button>
@@ -123,6 +140,7 @@ const DesktopNav = () => {
           <Popover trigger={'hover'} placement={'bottom-start'}>
             <PopoverTrigger>
               <Link
+                as={RouterLink}
                 p={2}
                 href={navItem.href ?? '#'}
                 fontSize={'sm'}
@@ -163,6 +181,7 @@ const DesktopNav = () => {
 const DesktopSubNav = ({ label, href, subLabel }) => {
   return (
     <Link
+      as={RouterLink}
       href={href}
       role={'group'}
       display={'block'}
@@ -254,7 +273,7 @@ const MobileNavItem = ({ label, children, href }) => {
         >
           {children &&
             children.map((child) => (
-              <Link key={child.label} py={2} href={child.href}>
+              <Link as={RouterLink} key={child.label} py={2} href={child.href}>
                 {child.label}
               </Link>
             ))}
@@ -280,5 +299,4 @@ const NAV_ITEMS = [
       },
     ],
   },
-  
 ]
