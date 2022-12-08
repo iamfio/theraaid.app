@@ -1,20 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import authService from '@/services/auth.service';
+import React, { useState, useEffect } from 'react'
+import authService from '@/services/auth.service'
 
-const AuthContext = React.createContext();
+const AuthContext = React.createContext()
 
 function AuthProviderWrapper(props) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [user, setUser] = useState(null)
 
   const storeToken = (token) => {
-    localStorage.setItem('authToken', token);
-  };
+    localStorage.setItem('authToken', token)
+  }
+
+  const storeId = (id) => {
+    localStorage.setItem('userId', id)
+  }
 
   const authenticateUser = async () => {
     // Get the stored token from the localStorage
-    const storedToken = localStorage.getItem('authToken');
+    const storedToken = localStorage.getItem('authToken')
 
     // If the token exists in the localStorage
     if (storedToken) {
@@ -29,39 +33,39 @@ function AuthProviderWrapper(props) {
 
       // Or using a service
       try {
-        const { data } = await authService.verify();
-        const user = data;
-        setIsLoggedIn(true);
-        setIsLoading(false);
-        setUser(user);
+        const { data } = await authService.verify()
+        const user = data
+        setIsLoggedIn(true)
+        setIsLoading(false)
+        setUser(user)
       } catch (error) {
-        setIsLoggedIn(false);
-        setIsLoading(false);
-        setUser(null);
+        setIsLoggedIn(false)
+        setIsLoading(false)
+        setUser(null)
       }
     } else {
       // If the token is not available
-      setIsLoggedIn(false);
-      setIsLoading(false);
-      setUser(null);
+      setIsLoggedIn(false)
+      setIsLoading(false)
+      setUser(null)
     }
-  };
+  }
 
   const removeToken = () => {
-    localStorage.removeItem('authToken');
-  };
+    localStorage.removeItem('authToken')
+  }
 
   const logOutUser = () => {
     // Upon logout, remove the token from the localStorage
-    removeToken();
-    authenticateUser();
-  };
+    removeToken()
+    authenticateUser()
+  }
 
   useEffect(() => {
     // Run this code once the AuthProviderWrapper component in the App loads for the first time.
     // This effect runs when the application and the AuthProviderWrapper component load for the first time.
-    authenticateUser();
-  }, []);
+    authenticateUser()
+  }, [])
 
   return (
     <AuthContext.Provider
@@ -76,7 +80,7 @@ function AuthProviderWrapper(props) {
     >
       {props.children}
     </AuthContext.Provider>
-  );
+  )
 }
 
-export { AuthProviderWrapper, AuthContext };
+export { AuthProviderWrapper, AuthContext }

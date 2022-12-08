@@ -18,6 +18,9 @@ import {
   useBreakpointValue,
   useDisclosure,
   useColorMode,
+  Divider,
+  Avatar,
+  HStack,
 } from '@chakra-ui/react'
 import {
   HamburgerIcon,
@@ -29,8 +32,8 @@ import {
 } from '@chakra-ui/icons'
 import { useContext } from 'react'
 
-export default function Navbar() {
-  const { isLoggedIn, isLoading } = useContext(AuthContext)
+export default function Navbar({ user }) {
+  const { isLoggedIn, isLoading, logOutUser } = useContext(AuthContext)
 
   const { colorMode, toggleColorMode } = useColorMode()
   const { isOpen, onToggle } = useDisclosure()
@@ -82,7 +85,9 @@ export default function Navbar() {
           direction={'row'}
           spacing={6}
         >
+          {isLoggedIn && <NavUserChip {...user} />}
           <AuthControl isLoggedIn={isLoggedIn} />
+
 
           {!isLoggedIn && (
             <Link
@@ -120,11 +125,25 @@ export default function Navbar() {
   )
 }
 
-const AuthControl = ({ isLoggedIn }) => (
+const NavUserChip = ({ firstName, userpicPath }) => (
+  <HStack
+    flex={{ base: 1, md: 0 }}
+    justify={'flex-end'}
+    direction={'row'}
+    spacing={6}
+  >
+    <Text fontSize={'sm'} fontWeight={'medium'}>{firstName}</Text>
+    <Avatar name={firstName} src={userpicPath} size={'sm'} mn={2} />
+    <Divider orientation="vertical" />
+  </HStack>
+)
+
+const AuthControl = ({ isLoggedIn, logOutUser }) => (
   <Link
     as={RouterLink}
-    to={isLoggedIn ? '/signout' : '/signin'}
-    p={2}
+    to={'/signin'}
+    py={2}
+    px={3}
     fontSize={'sm'}
     fontWeight={500}
     _hover={{

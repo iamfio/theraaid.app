@@ -31,10 +31,6 @@ class AuthService {
     // return axios.post("http://localhost:5005/auth/singup");
   }
 
-  logout = async () => {
-    return await this.api.get('/auth/signout')
-  }
-
   verify = async () => {
     return await this.api.get('/auth/verify')
     // same as

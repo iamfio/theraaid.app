@@ -21,10 +21,10 @@ import {
 } from '@chakra-ui/react'
 import authService from '../services/auth.service'
 import { useContext, useState } from 'react'
-import { AuthContext } from '@/context/auth.context'
+import { AuthContext } from '../context/auth.context'
 
 export default function SignIn() {
-  const { storeToken, authenticateUser } = useContext(AuthContext)
+  const { storeToken, storeId, authenticateUser } = useContext(AuthContext)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -35,9 +35,12 @@ export default function SignIn() {
 
     const { data } = await authService.login({ email, password })
 
+    console.log("LOGIN PAYLOAD:", data)
+
     storeToken(data.authToken)
+
     authenticateUser()
-    navigate('/')
+    navigate(`/app/${data.user._id}`)
   }
 
   return (

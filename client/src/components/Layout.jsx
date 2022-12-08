@@ -1,9 +1,9 @@
 import Navbar from '@/components/Navbar'
 
-function Layout({ children }) {
+function Layout({ children, user }) {
   return (
     <>
-      <Navbar />
+      <Navbar user={user}/>
       {children}
     </>
   )
